@@ -2,6 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include <Windows.h>
 #include <iostream>
+#include "Character.h"
+#include "Command.h"
+#include "InputHandler.h"
 
 #pragma region
 void GetDesktopResolution(int& horizontal, int& vertical)
@@ -26,20 +29,38 @@ int main()
 	// std::cout << horizontal << '\n' << vertical << '\n'; DEBUG
 
 	sf::RenderWindow window(sf::VideoMode((float)horizontal /  1.5f, (float)vertical / 1.5f), "Gloon");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
-
+	/*sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Green);*/
+	Character gloon;
+	InputHandler inputHandler;
+	
 	while (window.isOpen())
 	{
+
 		sf::Event event;
+	
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
-				window.close();
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+					window.close();
+					break;
+			default:
+				    break;
+			}
+			
 		}
-
+		
 		window.clear();
-		window.draw(shape);
+		gloon.draw(&window);
+		Command* command = inputHandler.handleInput();
+		if (command)
+		{
+			command->execute(gloon);
+		}
+		
+		/*window.draw(shape);*/
 		window.display();
 	}
 
