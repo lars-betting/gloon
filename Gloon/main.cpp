@@ -18,10 +18,6 @@ void GetDesktopResolution(int& horizontal, int& vertical)
 	vertical = desktop.bottom;
 }
 
-void update()
-{
-
-}
 
 #pragma endregion Get screen resolution 
 sf::Clock Clock;
@@ -46,6 +42,10 @@ int main()
 	//Init characters
 	Character* gloon = new Character;
 	Mirror* mirror = new Mirror(*gloon);
+	
+	gloon->setPosition(150.0f, 150.0f);
+	
+	
 #pragma endregion
 		
 	while (window.isOpen())
@@ -73,6 +73,7 @@ int main()
 
 #pragma region draw calls
 		gloon->draw(&window);
+		std::cout << gloon->getPosition().x << ", " << gloon->getPosition().y << std::endl;
 		mirror->draw(&window);
 #pragma endregion
 

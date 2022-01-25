@@ -1,6 +1,6 @@
 #pragma once
 #include "Character.h"
-class Mirror
+class Mirror 
 {
 public:
 	Mirror(Character& character);
@@ -13,7 +13,7 @@ public:
 private:
 
 	sf::RectangleShape* mirrorShape;
-	
+	sf::CircleShape* triangle;
 	float mirrorDistanceY;
 	float mirrorDistanceX;
 

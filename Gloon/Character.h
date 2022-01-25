@@ -4,7 +4,8 @@
 #include <SFML\Graphics.hpp>
 
 
-class Character {
+class Character 
+{
 
 public:
 	Character();
@@ -29,8 +30,10 @@ public:
 	void handleWalking(float speed);
 
 	sf::Vector2f getPosition();
-
+	sf::Vector2f getOrigin();
 private:
+
+	
 	sf::CircleShape* tempShape;
 	bool hasMirror = false;
 	

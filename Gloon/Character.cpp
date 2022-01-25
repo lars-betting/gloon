@@ -4,7 +4,9 @@
 Character::Character()
 {
 	tempShape = new sf::CircleShape(30.f);
-	tempShape->setPosition(sf::Vector2f(150.f, 150.f));
+	tempShape->setOrigin(20.0f, 70.0f);
+	tempShape->setPosition(this->getPosition());
+	//std::cout << tempShape->getPosition().x << ", " << tempShape->getPosition().y << std::endl;
 	tempShape->setFillColor(sf::Color::Red);
 }
 
@@ -19,59 +21,53 @@ void Character::draw(sf::RenderWindow* renderWindow)
 
 void Character::walkRight(float speed)
 {
-	std::cout << "walk right" << std::endl;
-	tempShape->move(speed, 0.0f);
+	this->move(speed, 0.0f);
 }
 
 void Character::walkLeft(float speed)
 {
-	std::cout << "walk left" << std::endl;
-	tempShape->move(-speed, 0.0f);
+	this->move(-speed, 0.0f);
 }
 
 void Character::walkUp(float speed)
 {
-	std::cout << "walk up" << std::endl;
-	tempShape->move(0.0f, -speed);
+	this->move(0.0f, -speed);
 }
 
 
 void Character::walkDown(float speed)
 {
-	std::cout << "walk down" << std::endl;
-	tempShape->move(0.0f, speed);
+	this->move(0.0f, speed);
 }
 
 void Character::walkUpLeft(float speed)
 {
 	speed = speed / sqrt(2.f);
-	std::cout << "walk up left" << std::endl;
-	tempShape->move(-speed, -speed);
+	this->move(-speed, -speed);
 }
 
 void Character::walkUpRight(float speed)
 {
 	speed = speed / sqrt(2.f);
-	std::cout << "walk up right" << std::endl;
-	tempShape->move(speed, -speed);
+	this->move(speed, -speed);
 }
 
 void Character::walkDownLeft(float speed)
 {
 	speed = speed / sqrt(2.f);
-	std::cout << "walk down left" << std::endl;
-	tempShape->move(-speed, speed);
+	this->move(-speed, speed);
 }
 
 void Character::walkDownRight(float speed)
 {
 	speed = speed / sqrt(2.f);
-	std::cout << "walk down right" << std::endl;
-	tempShape->move(speed, speed);
+	this->move(speed, speed);
 }
 
 void Character::handleWalking(float speed)
 {
+	tempShape->setPosition(this->getPosition());
+//	std::cout << tempShape->getPosition().x << ", " << tempShape->getPosition().y << std::endl;
 	//horizontal / vertical
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && 
 		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && 
@@ -133,5 +129,11 @@ sf::Vector2f Character::getPosition()
 {
 	sf::Vector2f position = tempShape->getPosition();
 	return position;
+}
+
+sf::Vector2f Character::getOrigin()
+{
+	sf::Vector2f origin = tempShape->getOrigin();
+	return sf::Vector2f();
 }
 
