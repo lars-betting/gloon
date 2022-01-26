@@ -1,139 +1,27 @@
 #include "Character.h"
-#include <iostream>
+#include "ResourceHolder.h"
 
-Character::Character()
+#include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\RenderStates.hpp>
+
+Textures::ID toTextureID(Character::Type type)
 {
-	tempShape = new sf::CircleShape(30.f);
-	tempShape->setOrigin(20.0f, 70.0f);
-	tempShape->setPosition(this->getPosition());
-	//std::cout << tempShape->getPosition().x << ", " << tempShape->getPosition().y << std::endl;
-	tempShape->setFillColor(sf::Color::Red);
-}
-
-Character::~Character()
-{
-}
-
-void Character::draw(sf::RenderWindow* renderWindow)
-{
-  renderWindow->draw(*tempShape);
-}
-
-void Character::walkRight(float speed)
-{
-	this->move(speed, 0.0f);
-}
-
-void Character::walkLeft(float speed)
-{
-	this->move(-speed, 0.0f);
-}
-
-void Character::walkUp(float speed)
-{
-	this->move(0.0f, -speed);
-}
-
-
-void Character::walkDown(float speed)
-{
-	this->move(0.0f, speed);
-}
-
-void Character::walkUpLeft(float speed)
-{
-	speed = speed / sqrt(2.f);
-	this->move(-speed, -speed);
-}
-
-void Character::walkUpRight(float speed)
-{
-	speed = speed / sqrt(2.f);
-	this->move(speed, -speed);
-}
-
-void Character::walkDownLeft(float speed)
-{
-	speed = speed / sqrt(2.f);
-	this->move(-speed, speed);
-}
-
-void Character::walkDownRight(float speed)
-{
-	speed = speed / sqrt(2.f);
-	this->move(speed, speed);
-}
-
-void Character::handleWalking(float speed)
-{
-	tempShape->setPosition(this->getPosition());
-//	std::cout << tempShape->getPosition().x << ", " << tempShape->getPosition().y << std::endl;
-	//horizontal / vertical
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && 
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && 
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::D) && 
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	switch (type)
 	{
-		walkLeft(speed);
-		return;
+	case Character::Gloon:
+		return Textures::Gloon;
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::S) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		walkRight(speed);
-		return;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::A) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		walkUp(speed);
-		return;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
-		!sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-	{
-		walkDown(speed);
-		return;
-	}
-
-	//diagonal
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-	{
-		walkUpLeft(speed);
-		return;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		walkDownLeft(speed);
-		return;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-	{
-		walkUpRight(speed);
-		return;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-	{
-		walkDownRight(speed);
-		return;
-	}
+	return Textures::Gloon;
 }
-
-sf::Vector2f Character::getPosition()
+Character::Character(Type type, const TextureHolder& textures)
+	: mType(type)
+	, mSprite(textures.get(toTextureID(type)))
 {
-	sf::Vector2f position = tempShape->getPosition();
-	return position;
+	sf::FloatRect bounds = mSprite.getLocalBounds();
+	mSprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
-sf::Vector2f Character::getOrigin()
+void Character::drawCurrent(sf::RenderTarget& target, sf::RenderStates states)const
 {
-	sf::Vector2f origin = tempShape->getOrigin();
-	return sf::Vector2f();
+	target.draw(mSprite, states);
 }
-

@@ -6,7 +6,7 @@
 class Command
 {
 public:
-	~Command();
+	
 	virtual void execute(Character& character) = 0;
 
 };

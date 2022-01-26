@@ -1,40 +1,25 @@
 #pragma once
 
 //Character class
-#include <SFML\Graphics.hpp>
+#include <SFML\Graphics\Sprite.hpp>
+#include "Entity.h"
+#include "ResourceIdentifiers.h"
 
-
-class Character 
+class Character : public Entity
 {
+public:
+	enum Type
+	{
+		Gloon
+	};
 
 public:
-	Character();
-	~Character();
+	Character(Type type, const TextureHolder& textures);
 
-	void draw(sf::RenderWindow* renderWindow);
-
-	//Keyboard controls
-
-	//4 DIRECTIONS
-	void walkRight(float speed);
-	void walkLeft(float speed);
-	void walkUp(float speed);
-	void walkDown(float speed);
-
-	//8 DIRECTIONS
-	void walkUpLeft(float speed);
-	void walkUpRight(float speed);
-	void walkDownLeft(float speed);
-	void walkDownRight(float speed);
-
-	void handleWalking(float speed);
-
-	sf::Vector2f getPosition();
-	sf::Vector2f getOrigin();
 private:
+	virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	
-	sf::CircleShape* tempShape;
-	bool hasMirror = false;
-	
+private:
+	Type mType;
+	sf::Sprite mSprite;
 };

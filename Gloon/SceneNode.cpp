@@ -1,5 +1,5 @@
 #include "SceneNode.h"
-
+#include "ForEach.h"
 #include <algorithm>
 #include <assert.h>
 SceneNode::SceneNode()
@@ -70,5 +70,13 @@ sf::Vector2f SceneNode::getWorldPosition() const
 
 sf::Transform SceneNode::getWorldTransform() const
 {
-	sf::Transform transform;
+	sf::Transform transform = sf::Transform::Identity;
+
+	for (const SceneNode* node = this; node != nullptr; node = node->mParent)
+	{
+		transform = node->getTransform() * transform;
+
+	
+	}
+	return transform;
 }
