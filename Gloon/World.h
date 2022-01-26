@@ -5,6 +5,8 @@
 #include "SceneNode.h"
 #include "SpriteNode.h"
 #include "Character.h"
+#include "CommandQueue.h"
+#include "Command.h"
 
 #include <SFML\System\NonCopyable.hpp>
 #include <SFML\Graphics\View.hpp>
@@ -25,9 +27,12 @@ public:
 	void update(sf::Time dt);
 	void draw();
 
+	CommandQueue& getCommandQueue();
 private:
 	void loadTextures();
 	void buildScene();
+	void adaptPlayerPosition();
+	void adaptPlayerVelocity();
 
 private:
 	enum Layer
@@ -44,9 +49,11 @@ private:
 
 	SceneNode mSceneGraph;
 	std::array<SceneNode*, LayerCount> mSceneLayers;
+	CommandQueue mCommandQueue;
 
 	sf::FloatRect mWorldBounds;
 	sf::Vector2f mSpawnPosition;
 	float mScrollSpeed;
 	Character* mPlayerCharacter;
+	
 };

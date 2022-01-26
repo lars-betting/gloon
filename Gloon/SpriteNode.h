@@ -1,5 +1,5 @@
 #pragma once
-#include "SceneNode.cpp"
+#include "SceneNode.h"
 
 #include <SFML/Graphics/Sprite.hpp>
 

@@ -25,3 +25,12 @@ void Character::drawCurrent(sf::RenderTarget& target, sf::RenderStates states)co
 {
 	target.draw(mSprite, states);
 }
+
+unsigned int Character::getCategory() const
+{
+	switch (mType)
+	{
+	case Gloon:
+		return Category::Gloon;
+	}
+}

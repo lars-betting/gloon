@@ -1,21 +1,23 @@
 #include "GameManager.h"
 #include "StringHelpers.h"
 
-#include <SFML\Window\Event.hpp>
+
 
 const sf::Time GameManager::TimePerFrame = sf::seconds(1.f / 60.f);
 GameManager::GameManager()
 	:mWindow(sf::VideoMode(1280, 960), "World" , sf::Style::Close)
 	, mWorld(mWindow)
+	, mPlayer()
 	, mFont()
 	, mStatisticsText()
 	, mStatisticsUpdateTime()
 	, mStatisticsNumFrames(0)
 {
+	mWindow.setKeyRepeatEnabled(false);
 	mFont.loadFromFile("res/AmaticSC-Regular.ttf");
 	mStatisticsText.setFont(mFont);
 	mStatisticsText.setPosition(5.f, 5.f);
-	mStatisticsText.setCharacterSize(10);
+	mStatisticsText.setCharacterSize(100);
 }
 
 void GameManager::run()
@@ -30,7 +32,7 @@ void GameManager::run()
 		{
 			timeSinceLastUpdate -= TimePerFrame;
 
-			processEvents();
+			processInput();
 			update(TimePerFrame);
 		}
 
@@ -39,25 +41,21 @@ void GameManager::run()
 	}
 }
 
-void GameManager::processEvents()
+void GameManager::processInput()
 {
+	CommandQueue& commands = mWorld.getCommandQueue();
 	sf::Event event;
 	while (mWindow.pollEvent(event))
 	{
-		switch (event.type)
+		mPlayer.handleEvent(event, commands);
+
+		
+		if (event.type == sf::Event::Closed)
 		{
-		case sf::Event::KeyPressed:
-			handlePlayerInput(event.key.code, true);
-			break;
-
-		case sf::Event::KeyReleased:
-			handlePlayerInput(event.key.code, false);
-
-		case sf::Event::Closed:
 			mWindow.close();
-			break;
 		}
 	}
+	mPlayer.handleRealtimeInput(commands);
 }
 
 void GameManager::update(sf::Time elapsedTime)
@@ -91,7 +89,3 @@ void GameManager::updateStatistics(sf::Time elapsedTime)
 	}
 }
 
-void GameManager::handlePlayerInput(sf::Keyboard::Key, bool)
-{
-
-}

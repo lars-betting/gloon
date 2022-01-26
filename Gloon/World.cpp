@@ -2,6 +2,10 @@
 
 #include <SFML\Graphics\RenderWindow.hpp>
 
+#include <algorithm>
+#include <cmath>
+
+
 World::World(sf::RenderWindow& window)
 	: mWindow(window)
 	, mWorldView(window.getDefaultView())
@@ -22,10 +26,17 @@ World::World(sf::RenderWindow& window)
 
 void World::update(sf::Time dt)
 {
-	sf::Vector2f position = mPlayerCharacter->getPosition();
-	sf::Vector2f velocity = mPlayerCharacter->getVelocity();
+	mPlayerCharacter->setVelocity(0.0f, 0.0f);
+
+	while (!mCommandQueue.isEmpty())
+	{
+		mSceneGraph.onCommand(mCommandQueue.pop(), dt);
+	}
+	adaptPlayerVelocity();
+
 
 	mSceneGraph.update(dt);
+	adaptPlayerPosition();
 }
 
 void World::draw()
@@ -34,9 +45,15 @@ void World::draw()
 	mWindow.draw(mSceneGraph);
 }
 
+CommandQueue& World::getCommandQueue()
+{
+	return mCommandQueue;
+}
+
 void World::loadTextures()
 {
-	mTextures.load(Textures::Gloon, "res/Textures/Gloon.png");
+	mTextures.load(Textures::Gloon, "res/textures/Gloon.png");
+	mTextures.load(Textures::TempBackground, "res/textures/TempBackground.png");
 }
 
 void World::buildScene()
@@ -60,8 +77,33 @@ void World::buildScene()
 
 	std::unique_ptr<Character> gloon(new Character(Character::Gloon, mTextures));
 	mPlayerCharacter = gloon.get();
+	mPlayerCharacter->scale(0.2f, 0.2f);
 	mPlayerCharacter->setPosition(mSpawnPosition);
-	mPlayerCharacter->setVelocity(40.f, mScrollSpeed);
+	mPlayerCharacter->setVelocity(40.f, 40.0f);
 	mSceneLayers[Air]->attachChild(std::move(gloon));
+	
+}
+
+void World::adaptPlayerPosition()
+{
+	//keep player position inside screen bounds
+	sf::FloatRect viewBounds(mWorldView.getCenter() - mWorldView.getSize() / 2.f, mWorldView.getSize());
+	const float borderDistance = 40.f;
+
+	sf::Vector2f position = mPlayerCharacter->getPosition();
+	position.x = std::max(position.x, viewBounds.left + borderDistance);
+	position.x = std::min(position.x, viewBounds.left + viewBounds.width - borderDistance);
+	position.y = std::max(position.y, viewBounds.top + borderDistance);
+	position.y = std::min(position.y, viewBounds.top + viewBounds.height - borderDistance);
+	mPlayerCharacter->setPosition(position);
+}
+void World::adaptPlayerVelocity()
+{
+	sf::Vector2f velocity = mPlayerCharacter->getVelocity();
+
+	// If moving diagonally, reduce velocity (to have always same velocity)
+	if (velocity.x != 0.f && velocity.y != 0.f)
+		mPlayerCharacter->setVelocity(velocity / std::sqrt(2.f));
+
 	
 }

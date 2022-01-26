@@ -1,4 +1,5 @@
 #include "SceneNode.h"
+#include "Command.h"
 #include "ForEach.h"
 #include <algorithm>
 #include <assert.h>
@@ -79,4 +80,18 @@ sf::Transform SceneNode::getWorldTransform() const
 	
 	}
 	return transform;
+}
+void SceneNode::onCommand(const Command& command, sf::Time dt)
+{
+	//command currenty node if category matches
+	if (command.category & getCategory())
+	{
+		command.action(*this, dt);
+	}
+	FOREACH(Ptr& child, mChildren)
+		child->onCommand(command, dt);
+}
+unsigned int SceneNode::getCategory() const
+{
+	return Category::Scene;
 }
